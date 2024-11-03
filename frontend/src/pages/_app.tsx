@@ -1,6 +1,20 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
+// import "antd/dist/reset.css"; // Ant Design versi 5
 // import { useEffect } from "react";
+import {
+	QueryClient,
+	QueryClientProvider,
+	QueryErrorResetBoundary,
+	useQueryClient,
+} from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+import { ErrorBoundary } from "react-error-boundary";
+
+// template component
+import FallbackComponent from "@/components/template/fallbackComponent";
+import Custom404 from "@/pages/404";
 
 export default function App({ Component, pageProps }: AppProps) {
 	//   useEffect(() => {
@@ -17,6 +31,27 @@ export default function App({ Component, pageProps }: AppProps) {
 	//         });
 	// 		}
 	// 	}, []);
+	const queryClient = new QueryClient({
+		defaultOptions: {
+			queries: {
+				retry: 0,
+			},
+		},
+	});
 
-	return <Component {...pageProps} />;
+	return (
+		<QueryClientProvider client={queryClient}>
+			<QueryErrorResetBoundary>
+				{({ reset }) => (
+					<ErrorBoundary
+						onReset={reset}
+						FallbackComponent={FallbackComponent}
+					>
+						<Component {...pageProps} />
+					</ErrorBoundary>
+				)}
+			</QueryErrorResetBoundary>
+			<ReactQueryDevtools initialIsOpen />
+		</QueryClientProvider>
+	);
 }
