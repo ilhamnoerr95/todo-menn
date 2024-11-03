@@ -1,4 +1,3 @@
-const asyncWrapper = require("../../final/middleware/async");
 const Task = require("../models/Task");
 
 // const asyncWrapper = require("../middleware/async")
@@ -49,10 +48,13 @@ const createNewTodo = async (req, res) => {
 		const result = await Task.create({
 			name: body.name,
 			completed: body.completed,
+			content: body.content,
 		});
 		console.log(result);
 		await res.status(201).json({ status: 200, data: body });
 	} catch (error) {
+		console.log(error);
+		// apabila sintaksis tidak sesuai dengan scema
 		let errorResponse = {
 			status: 400,
 			data: {},
