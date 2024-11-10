@@ -17,7 +17,8 @@
 		"paths": {
 			"@/*": ["./src/*"],
 			"@/components/*": ["./src/components/*"],
-			"@/page/*": ["./src/pages/*"]
+			"@/page/*": ["./src/pages/*"],
+			"@/Utils/*": ["./src/utils/*"]
 		},
 		"target": "ES2017"
 	},
