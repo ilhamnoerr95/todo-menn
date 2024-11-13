@@ -18,7 +18,7 @@ export const ssrWrapper = (ssr: (payload: any) => any, url?: string) => {
 
 		// ssr callback yg mereturn si callbacnya dan parameter callback ini adalah
 		// value dari utils ini sendiri
-		const additional = await ssr({ test: "ss", queryClient });
+		const additional = await ssr({ test: "ss", queryClient, ...context });
 
 		return {
 			props: {

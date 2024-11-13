@@ -1,25 +1,42 @@
+import { useRouter } from "next/router";
 import React from "react";
 
 interface Card {
 	title?: string;
 	content?: string;
+	id?: string;
+	completed?: boolean;
+	key?: number;
 }
 
 const Card: React.FC<Card> = (props) => {
-	const { title, content } = props;
+    const router= useRouter()
+	const { title, content, id, completed, key } = props;
+	const cardClick = (id: string | undefined) => {
+
+        router.push({pathname:`/detail/${id}`},)
+	};
+
 	return (
 		<>
-			<div className="card">
+			<div
+				key={key}
+				className="card"
+				onClick={() => cardClick(id)}
+			>
 				<div className="card-content">
 					<p className="card-title">{title}</p>
 					<span className="flex gap-2">
-						<input
+						{/* <input
 							type="radio"
 							disabled
+							checked={completed && completed}
 							name="content"
 							title="content"
-						/>
-						<p className="card-text">{content}</p>
+						/> */}
+						<p className={`card-text ${completed ? "completed" : ""}`}>
+							{content}
+						</p>
 					</span>
 				</div>
 			</div>
@@ -36,7 +53,8 @@ const Card: React.FC<Card> = (props) => {
 //   outline-color: transparent;
 // }
   
-                .card {
+        .card {
+            cursor:pointer;
             background-color: #FFFFFF;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(88, 0, 0, 0.1);
@@ -81,6 +99,10 @@ const Card: React.FC<Card> = (props) => {
             color: #1A1A1A;
             line-height: 1.6;
         }
+
+        .completed {
+        text-decoration: line-through;
+        } 
 
                     `}
 			</style>

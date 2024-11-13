@@ -14,6 +14,7 @@ export const DefaultFetcher = async (payload: IFetcher) => {
 		let URL: string = "";
 
 		if (payload.url) {
+			// ini pilihan apabila tidak menggunakan queryKey untuk url atau params
 			URL = payload.url;
 		} else {
 			// const queryKeys = payload.queryKey ?? [];

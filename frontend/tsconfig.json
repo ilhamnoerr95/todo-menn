@@ -18,7 +18,8 @@
 			"@/*": ["./src/*"],
 			"@/components/*": ["./src/components/*"],
 			"@/page/*": ["./src/pages/*"],
-			"@/Utils/*": ["./src/utils/*"]
+			"@/Utils/*": ["./src/utils/*"],
+			"@/Types/*": ["./src/types/*"]
 		},
 		"target": "ES2017"
 	},

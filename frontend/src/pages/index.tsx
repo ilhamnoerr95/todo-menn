@@ -9,20 +9,13 @@ import { useQuery } from "@tanstack/react-query";
 // component
 const Card = dynamic(() => import("@/components/atom/card"), { ssr: false });
 
+// type
+import { IDataTodo } from "@/types/IData.type";
+
 const inter = Inter({ subsets: ["latin"] });
 
-interface IData {
-	status?: string;
-	data?: {
-		completed: boolean;
-		_id: string;
-		name: string;
-		content: string;
-		__v: number;
-	}[];
-}
 const Index = () => {
-	const { data: dataTodo } = useQuery<IData>({
+	const { data: dataTodo } = useQuery<IDataTodo>({
 		queryKey: [
 			"/todo",
 			{
@@ -47,11 +40,13 @@ const Index = () => {
 			>
 				<div className="text-center mb-4 title">MY TODO LIST</div>
 				<div className="grid gap-4">
-					{dataTodo?.data?.map((data: any) => (
+					{dataTodo?.data?.map((data: any, key: number) => (
 						<Card
 							id={data?._id}
-							title={data.name}
-							content={data.content}
+							key={key}
+							title={data?.name}
+							content={data?.content}
+							completed={data?.completed}
 						/>
 					))}
 				</div>
@@ -85,7 +80,6 @@ export const getServerSideProps: GetServerSideProps = ssrWrapper(
 
 		await queryClient.prefetchQuery({ queryKey: KEY });
 
-		console.log("hasil prefetc:", context);
 		return {
 			props: {
 				test: "uye",
