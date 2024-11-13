@@ -29,9 +29,7 @@ const getTodo = async (req, res) => {
 
 		await res.status(200).json({
 			status: 200,
-			data: {
-				findOne,
-			},
+			data: findOne,
 		});
 	} catch (error) {
 		res.status(500).json({
