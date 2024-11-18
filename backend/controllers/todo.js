@@ -71,8 +71,10 @@ const createNewTodo = async (req, res) => {
 // update
 const updateTodo = async (req, res) => {
 	try {
+		const keyObj = ["name", "completed", "content"];
 		const { id: updateId } = req.params;
 		const { body } = req;
+		console.log(body);
 		const taskUpdate = await Task.findByIdAndUpdate(updateId, body, {
 			new: true,
 			runValidators: true,
@@ -85,14 +87,22 @@ const updateTodo = async (req, res) => {
 			});
 		}
 
-		await res.status(200).json({
-			status: 200,
-			data: {
-				id: taskUpdate._id,
-				name: taskUpdate.name,
-				completed: taskUpdate.completed,
-			},
-		});
+		if (Object.keys(body).length === 0) {
+			return res.status(400).json({
+				status: 400,
+				message: `Data ${keyObj.join(" ")} shouldn't be empty! `,
+			});
+		} else {
+			await res.status(200).json({
+				status: 200,
+				data: {
+					id: taskUpdate._id,
+					name: taskUpdate.name,
+					completed: taskUpdate.completed,
+					content: taskUpdate.content,
+				},
+			});
+		}
 	} catch (error) {
 		// res.status(500).json({ status: 500, msg: error });
 		let errorResponse = {
