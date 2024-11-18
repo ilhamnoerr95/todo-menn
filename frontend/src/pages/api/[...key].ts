@@ -12,19 +12,18 @@ export default async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
+	const { query, body, headers, method } = req;
+	// for url parameter api
+	const { key } = query;
 	try {
-		const { query, body, headers, method } = req;
-		// for url parameter api
-		const { key } = query;
-
 		// OPTIONS
 		const options: RequestInit = {
 			method: method,
 			headers: {
 				// key: process.env.NEXT_API_KEY!,
 				version: headers?.version as TApiVersion,
-				// device: process.env.NEXT_API_DEVICE!,
 				"content-type": "application/json",
+				// device: process.env.NEXT_API_DEVICE!,
 				// ...(authorization &&
 				// 	authorization !== "no_auth" && {
 				// 		Authorization: authorization,
@@ -46,17 +45,14 @@ export default async function handler(
 			key as string[]
 		).join("/")}?${params}`;
 
-		console.log("local api", method);
-
 		const response = await fetch(URL, options);
 		const result = await response.json();
 
 		const status = response.status;
-		console.log(result);
 
-		if (!response.ok) {
-			res.status(status).json(result);
-		}
+		// if (!response.ok) {
+		// 	res.status(status).json(result);
+		// }
 
 		res.status(status).json(result);
 	} catch (error) {

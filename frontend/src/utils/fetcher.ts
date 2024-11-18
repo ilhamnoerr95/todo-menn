@@ -5,11 +5,14 @@ interface IFetcher {
 	// queryKey default dari react query, jadi fungsi di dalam react query
 	// masih bisa digunakan tanpa melempar parameter di dalam fungsinya
 	queryKey?: string[];
+	apiVersion?: string;
 }
+
+// utils
+import { urlUtils } from "@/Utils/url.utils";
 
 export const DefaultFetcher = async (payload: IFetcher) => {
 	try {
-		console.log("ini default fetcher", payload);
 		// 2 optional jika payload url ada jika tidak ambil dari query keys
 		let URL: string = "";
 
@@ -19,20 +22,20 @@ export const DefaultFetcher = async (payload: IFetcher) => {
 		} else {
 			// const queryKeys = payload.queryKey ?? [];
 			// URL = new URLSearchParams(payload.body).toString();
-			const params = payload.queryKey?.[1]
-				? `?${new URLSearchParams({ ...(payload.queryKey?.[1] as any) })}`
-				: "";
 
-			URL = `${process.env.NEXT_PUBLIC_ROOT_FE}/api${payload.queryKey?.[0]}${params}`;
+			URL = urlUtils({
+				query: payload.queryKey?.[1],
+				urlApi: payload.queryKey?.[0] as string,
+			});
 		}
 
-		console.log({ URL, env: process.env.NEXT_PUBLIC_ROOT_FE });
+		// console.log({ URL });
 
 		const OPTION: RequestInit = {
 			method: payload.method,
 			headers: {
 				"Content-Type": "application/json",
-				version: payload.queryKey?.[2] || "v1",
+				version: payload.apiVersion || "v1",
 			},
 			...(payload.body && { body: JSON.stringify(payload.body) }),
 		};

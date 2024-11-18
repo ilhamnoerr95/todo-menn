@@ -20,7 +20,7 @@ import React from "react";
 
 export default function App({ Component, pageProps }: AppProps) {
 	const { dehydratedState, test, ...restProp } = pageProps;
-	console.log("pageprops:", pageProps);
+	// console.log("pageprops:", pageProps);
 	//   useEffect(() => {
 	// 		/**
 	// 		 * resgister this service worker in app because of

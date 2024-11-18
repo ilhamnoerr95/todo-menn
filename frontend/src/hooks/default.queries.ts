@@ -6,5 +6,8 @@ export const defaultQuery = (params: any) => ({
 			...payload,
 			url: params?.url,
 			method: "GET",
+			apiVersion: params.apiVersion,
 		}),
 });
+
+export default defaultQuery;
