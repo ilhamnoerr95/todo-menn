@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { ssrWrapper } from "@/Utils/ssrWrapper";
 import { GetServerSideProps } from "next";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 // type
 import { IDataDetail } from "@/types/IData.type";
@@ -38,13 +39,18 @@ const Page: React.FC = () => {
 		id?: string | undefined;
 	}>({
 		config: {
-			mutationKey: [`/todo/${slug?.[0] as any}`, "", "v1"],
+			mutationKey: [`/todo/${slug?.[0] as string}`, "", "v1"],
 
-			onError: async (error: any) => {
-				console.log(error);
+			onError: async () => {
+				toast.error("Something went wrong", {
+					position: "top-center",
+				});
 			},
 
 			onSuccess: async (res: any) => {
+				toast.success("Updated Success!", {
+					position: "top-center",
+				});
 				if (res.status === 200) {
 					queryClient.invalidateQueries({
 						queryKey: [
@@ -185,7 +191,7 @@ export const getServerSideProps: GetServerSideProps = ssrWrapper(
 		const { queryClient, query } = context;
 		// for query Key berisi url, maupun params sebagai api
 		const KEY = [
-			`/todo/${query.key?.[0]}`,
+			`/todo/${query.slug?.[0]}`,
 			{
 				// key: "",
 			},

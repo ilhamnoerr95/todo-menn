@@ -1,5 +1,10 @@
 import { useRouter } from "next/router";
 import React from "react";
+import { useQueryClient } from "@tanstack/react-query";
+
+import { toast } from "react-toastify";
+
+import { useDelete } from "@/hooks/index";
 
 interface Card {
 	title?: string;
@@ -7,14 +12,49 @@ interface Card {
 	id?: string;
 	completed?: boolean;
 	key?: number;
+	refetch: () => void;
 }
 
 const Card: React.FC<Card> = (props) => {
-    const router= useRouter()
+	const router = useRouter();
+	const queryClient = useQueryClient();
+
 	const { title, content, id, completed, key } = props;
 	const cardClick = (id: string | undefined) => {
+		router.push({ pathname: `/detail/${id}` });
+	};
 
-        router.push({pathname:`/detail/${id}`},)
+	const mutation = useDelete({
+		config: {
+			mutationKey: [`/todo/${id}`, "", "v1"],
+
+			onSuccess: (res: any) => {
+				if (res.status === 200) {
+					console.log(res);
+					toast.success("Deleted Success!", {
+						position: "top-center",
+					});
+
+					props.refetch();
+
+					router.push("/");
+				} else {
+					console.log(res);
+					toast.error("Something Went Wrong!", {
+						position: "top-center",
+					});
+				}
+			},
+			onError: () => {
+				toast.error("Something went wrong", {
+					position: "top-center",
+				});
+			},
+		},
+	});
+
+	const deleteButton = () => {
+		mutation.mutate();
 	};
 
 	return (
@@ -39,6 +79,14 @@ const Card: React.FC<Card> = (props) => {
 						</p>
 					</span>
 				</div>
+				<button
+					onClick={deleteButton}
+					type="button"
+					title="btnDelete"
+					className="text-black bg-red-200 font-bold"
+				>
+					Delete
+				</button>
 			</div>
 
 			<style>
@@ -63,6 +111,8 @@ const Card: React.FC<Card> = (props) => {
             position: relative;
             max-width: 450px;
             transition: all 0.3s ease;
+            display: flex;
+            flex-direction: row;
             
         }
         .card::before {
@@ -88,6 +138,7 @@ const Card: React.FC<Card> = (props) => {
         .card-content {
             position: relative;
             z-index: 1;
+            width: 100%;
             
         }
         .card-title {
@@ -103,6 +154,7 @@ const Card: React.FC<Card> = (props) => {
         .completed {
         text-decoration: line-through;
         } 
+      
 
                     `}
 			</style>

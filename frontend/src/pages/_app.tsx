@@ -2,6 +2,9 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 // import "antd/dist/reset.css"; // Ant Design versi 5
 // import { useEffect } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import {
 	HydrationBoundary,
 	QueryClient,
@@ -60,6 +63,8 @@ export default function App({ Component, pageProps }: AppProps) {
 
 	return (
 		<QueryClientProvider client={queryClient}>
+			<ToastContainer />
+
 			{/* fungsi dari hydration yaitu menampilkan data secepatnya dari server ke client
 				hyrate bekerja apabila sebagai preload/re render dalam menampilkan data terlebih dahulu sebelum html atau js
 				saat menggunakan hydrate untuk ssr di mana kita bisa invoke setiap useQuery hook kedalam nest komponent yg lebih efektif

@@ -11,11 +11,13 @@ const Card = dynamic(() => import("@/components/atom/card"), { ssr: false });
 
 // type
 import { IDataTodo } from "@/types/IData.type";
+import { useRouter } from "next/router";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const Index = () => {
-	const { data: dataTodo } = useQuery<IDataTodo>({
+	const router = useRouter();
+	const { data: dataTodo, refetch } = useQuery<IDataTodo>({
 		queryKey: [
 			"/todo",
 			{
@@ -26,7 +28,6 @@ const Index = () => {
 		],
 	});
 
-	console.log(dataTodo?.data);
 	return (
 		<>
 			<main
@@ -39,6 +40,22 @@ const Index = () => {
 				}}
 			>
 				<div className="text-center mb-4 title">MY TODO LIST</div>
+				<button
+					title="btn-new"
+					type="submit"
+					style={{
+						border: "1px solid black",
+						borderRadius: "5px",
+						width: "30%",
+						padding: "0.5rem 0",
+					}}
+					className="text-black"
+					onClick={() => {
+						router.push("/create");
+					}}
+				>
+					Create New
+				</button>
 				<div className="grid gap-4">
 					{dataTodo?.data?.map((data: any, key: number) => (
 						<Card
@@ -47,6 +64,7 @@ const Index = () => {
 							title={data?.name}
 							content={data?.content}
 							completed={data?.completed}
+							refetch={refetch}
 						/>
 					))}
 				</div>
