@@ -36,6 +36,17 @@ const PORT = process.env.PORT || 3200;
 // router
 app.use("/api/v1/todo", todo);
 
+// Middleware untuk menangani error
+app.use((err, req, res, next) => {
+	const statusCode = err.status || 500;
+	res.status(statusCode).json({
+		error: {
+			message: err.message,
+			status: statusCode,
+		},
+	});
+});
+
 //connect db and server
 const start = async () => {
 	try {

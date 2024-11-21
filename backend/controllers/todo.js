@@ -21,6 +21,9 @@ const getTodo = async (req, res) => {
 		const findOne = await Task.findOne({ _id: idTask });
 
 		if (!findOne) {
+			// const error = new Error(`Task not found with id ${idTask}`);
+			// error.status = 404;
+			// return next(error);
 			return res.status(404).json({
 				status: 404,
 				message: `Task not found with id ${idTask}`,
