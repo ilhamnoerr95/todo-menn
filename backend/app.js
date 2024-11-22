@@ -3,6 +3,9 @@ const morgan = require("morgan");
 const todo = require("./router/todo");
 const app = express();
 
+const notFound = require("./middleware/notFound");
+const errorHandler = require("./middleware/errorHandlers");
+
 require("dotenv").config();
 // for connect db
 const connectDb = require("./db/connect");
@@ -36,16 +39,11 @@ const PORT = process.env.PORT || 3200;
 // router
 app.use("/api/v1/todo", todo);
 
+// middleware for router not exist
+app.use(notFound);
+
 // Middleware untuk menangani error
-app.use((err, req, res, next) => {
-	const statusCode = err.status || 500;
-	res.status(statusCode).json({
-		error: {
-			message: err.message,
-			status: statusCode,
-		},
-	});
-});
+app.use(errorHandler);
 
 //connect db and server
 const start = async () => {

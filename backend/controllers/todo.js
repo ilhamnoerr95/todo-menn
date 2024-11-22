@@ -1,6 +1,5 @@
 const Task = require("../models/Task");
-
-// const asyncWrapper = require("../middleware/async")
+const { CreateCustomError } = require("../utils/customApiError");
 
 // get all
 const getAllTodo = async (req, res) => {
@@ -14,23 +13,17 @@ const getAllTodo = async (req, res) => {
 };
 
 // get Single task
-const getTodo = async (req, res) => {
+const getTodo = async (req, res, next) => {
 	try {
 		const { id: idTask } = req.params;
 
 		const findOne = await Task.findOne({ _id: idTask });
 
 		if (!findOne) {
-			// const error = new Error(`Task not found with id ${idTask}`);
-			// error.status = 404;
-			// return next(error);
-			return res.status(404).json({
-				status: 404,
-				message: `Task not found with id ${idTask}`,
-			});
+			return next(CreateCustomError(`Task not found with id ${idTask}`, 404));
 		}
 
-		await res.status(200).json({
+		return await res.status(200).json({
 			status: 200,
 			data: findOne,
 		});
@@ -43,7 +36,7 @@ const getTodo = async (req, res) => {
 };
 
 // create
-const createNewTodo = async (req, res) => {
+const createNewTodo = async (req, res, next) => {
 	try {
 		const { body } = req;
 		const result = await Task.create({
@@ -54,17 +47,19 @@ const createNewTodo = async (req, res) => {
 		console.log(result);
 		await res.status(201).json({ status: 200, data: body });
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		// apabila sintaksis tidak sesuai dengan scema
 		let errorResponse = {
-			status: 400,
-			data: {},
+			error: {
+				status: 400,
+				data: {},
+			},
 		};
 		for (const key in error.errors) {
 			const obj = error.errors;
 			const message = obj[key].properties.message;
 
-			errorResponse.data[key] = message;
+			errorResponse.error.data[key] = message;
 		}
 
 		await res.status(400).json(errorResponse);
@@ -83,6 +78,12 @@ const updateTodo = async (req, res) => {
 			runValidators: true,
 		});
 
+		const keysInBody = Object.keys(body); // Ambil semua key dari objek body
+
+		// Cek apakah semua key dari body ada di array data
+		const isAllKeysExist = keysInBody.every((key) => keyObj.includes(key));
+
+		console.log(isAllKeysExist);
 		if (!taskUpdate) {
 			return res.status(404).json({
 				status: 404,
@@ -90,7 +91,7 @@ const updateTodo = async (req, res) => {
 			});
 		}
 
-		if (Object.keys(body).length === 0) {
+		if (Object.keys(body).length === 0 || !isAllKeysExist) {
 			return res.status(400).json({
 				status: 400,
 				message: `Data ${keyObj.join(" ")} shouldn't be empty! `,
